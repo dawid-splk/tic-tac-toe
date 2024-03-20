@@ -56,7 +56,7 @@ public class GameService {
         if (game.getStatus().equals(FINISHED)) {
             throw new InvalidGameException("Game is already finished");
         }
-        if(!game.getTurn().equals(gamePlay.getType())){
+        if(isPlayTypeInvalid(gamePlay, game)){
             return null;
         }
 
@@ -77,6 +77,10 @@ public class GameService {
 
         GameStorage.getInstance().setGame(game);
         return game;
+    }
+
+    private static boolean isPlayTypeInvalid(GamePlay gamePlay, Game game) {
+        return !game.getTurn().equals(gamePlay.getType());
     }
 
     private Boolean checkWinner(int[][] board, TicToe ticToe) {
