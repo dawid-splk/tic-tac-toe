@@ -1,38 +1,110 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Press+Start+2P&display=swap');
+body {
+    background: #212121;
+    color: #666;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1 {
+    text-align: center;
+    color: #fff;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.clearfix {
+    clear: both;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+#box {
+    font-family: "Press Start 2P", system-ui;
+    width: 450px;
+    overflow: auto;
+    margin: 40px auto;
+    background: #666;
+    padding-top: 10px;
+    padding-bottom: 40px;
+    border-radius: 10px;
 }
 
-.App-link {
-  color: #61dafb;
+#usernameForm {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#login {
+  font-family: "Press Start 2P", system-ui;
+  font-size: 16px;
+    border: 0;
+    background: #444;
+    color: #fff;
+    width: 70%;
+    padding: 15px;
+    border-radius: 5px;
 }
+
+#joinButton {
+  font-family: "Press Start 2P", system-ui;
+    border: 0;
+    background: #444;
+    color: #fff;
+    width: 45%;
+    height: 35px;
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 10px 15px 15px;
+    font-size: 12px;
+}
+
+#message {
+    background: #333;
+    color: #fff;
+}
+
+#gameBoard li {
+    display: flex;
+    align-items: center; /* Zentriert den Inhalt vertikal */
+    justify-content: center; /* Zentriert den Inhalt horizontal */
+    float: left;
+    margin: 10px;
+    height: 100px;
+    width: 100px;
+    font-size: 60px;
+    background: #333;
+    color: #ccc;
+    list-style: none;
+    text-align: center;
+    border-radius: 5px;
+    /*padding-top: 30px;*/
+}
+
+#gameBoard li:hover, #reset:hover {
+    cursor: pointer;
+    background: #000;
+}
+
+#reset {
+    border: 0;
+    background: #444;
+    color: #fff;
+    width: 70%;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.o {
+    color: green !important;
+}
+
+.x {
+    color: red !important;
+}
+
+footer {
+    display: block;
+    text-align: center;
+    padding-top: 20px;
+}
+
+
