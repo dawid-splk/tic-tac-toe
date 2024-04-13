@@ -6,10 +6,18 @@ services:
     build: .
     ports:
       - "8080:8080"
+    environment:
+      - HOST_IP=${HOST_IP}
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        REACT_APP_HOST_IP: ${HOST_IP}  # react requires the variable to be prefixed with REACT_APP_
     ports:
       - "80:80"
     depends_on:
      - backend
+
+#environment:
+#  - VARIABLE=${VARIABLE}

@@ -7,6 +7,10 @@ COPY package-lock.json ./
 
 RUN npm install
 
+ARG REACT_APP_HOST_IP
+
+ENV REACT_APP_HOST_IP $REACT_APP_HOST_IP
+
 COPY . .
 
 RUN npm run build

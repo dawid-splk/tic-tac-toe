@@ -4,7 +4,8 @@ import Stomp from 'stompjs';
 import './App.css';
 
 
-const url = 'http://localhost:8080';
+const hostIp = process.env.REACT_APP_HOST_IP || 'localhost';
+const url = `http://${hostIp}:8080`;
 
 function App() {
   const [gameId, setGameId] = useState('');
@@ -157,7 +158,7 @@ function App() {
   return (
     <div className="text-center" id="box">
     <header>
-        <h1>Tic Tac Toe</h1>
+        <h1>IP: {hostIp}</h1>
     </header>
     <div className="text-center" id="usernameForm">
         <input  id="login" placeholder="Enter username"></input>
