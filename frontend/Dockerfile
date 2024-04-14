@@ -1,11 +1,11 @@
-FROM node:20.11.1-alpine AS builder
+FROM dspalek/tictactoe_frontend_base:latest AS builder
 
-WORKDIR /app
-
-COPY package.json ./
-COPY package-lock.json ./
-
-RUN npm install
+#WORKDIR /app
+#
+#COPY package.json ./
+#COPY package-lock.json ./
+#
+#RUN npm install
 
 ARG REACT_APP_HOST_IP
 
