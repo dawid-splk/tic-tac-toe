@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import './App.css';
-
+import Register from "./Register";
+import Login from "./Login";
+import Logout from "./Logout";
+import {refreshToken} from "./refreshToken";
 
 const hostIp = process.env.REACT_APP_HOST_IP || 'localhost';
 const url = `http://${hostIp}:8080`;
@@ -42,7 +45,7 @@ function App() {
   //       console.log("Disconnected");
   //     }
   //   };
-  // }, [gameId]); 
+  // }, [gameId]);
 
 
   const reset = () => {
@@ -59,10 +62,19 @@ function App() {
 
   const makeAMove = async (type, xCoordinate, yCoordinate) => {
     try {
+      await refreshToken();
+
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (!accessToken) {
+        throw new Error('Access token not available');
+      }
+
       const response = await fetch(url + "/game/gameplay", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           "type": type,
@@ -113,11 +125,20 @@ function App() {
       return;
     }
 
+    await refreshToken();
+
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+        throw new Error('Access token not available');
+    }
+
     try {
       const response = await fetch(url + "/game/join", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           "login": login
@@ -154,30 +175,40 @@ function App() {
     }
   };
 
-  // Hier würde das JSX-Layout für Ihre Spieloberfläche gehen
   return (
-    <div className="text-center" id="box">
-    <header>
-        <h1>IP: {hostIp}</h1>
-    </header>
-    <div className="text-center" id="usernameForm">
-        <input  id="login" placeholder="Enter username"></input>
-        <button id="joinButton" onClick={createGame}>Join new game</button>
-    </div>
-    <div id="message"></div>    
-    <ul id="gameBoard">
-    {turns.map((row, i) => (
-    row.map((symbol, j) => (
-      <li key={`${i}_${j}`} className="tic" onClick={() => playerTurn(playerType, i, j)}>{symbol}</li>
-    ))
-  ))}
-    </ul>
+      <div>
+        {localStorage.getItem('accessToken') ? (
+                <div className="text-center" id="box">
+                  <header>
+                    <h1>IP: {hostIp}</h1>
+                  </header>
+                  <div className="text-center" id="usernameForm">
+                    <input  id="login" placeholder="Enter username"></input>
+                    <button id="joinButton" onClick={createGame}>Join new game</button>
+                  </div>
+                  <div id="message"></div>
+                  <ul id="gameBoard">
+                    {turns.map((row, i) => (
+                        row.map((symbol, j) => (
+                            <li key={`${i}_${j}`} className="tic" onClick={() => playerTurn(playerType, i, j)}>{symbol}</li>
+                        ))
+                    ))}
+                  </ul>
 
-    <div className="clearfix"></div>
-    <footer>
-        <span><span id="oponentLogin"></span></span>
-    </footer>
-    </div>
+                  <div className="clearfix"></div>
+                  <footer>
+                    <span><span id="oponentLogin"></span></span>
+                  </footer>
+                  <Logout />
+                </div>
+        ) : (
+            <>
+              <Register />
+              <Login />
+            </>
+        )}
+
+      </div>
   );
 }
 

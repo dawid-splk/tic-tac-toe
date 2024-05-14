@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Press+Start+2P&display=swap');
+
+#cognitoBox {
+    font-family: "Press Start 2P", system-ui;
+    width: 450px;
+    overflow: auto;
+    margin: 40px auto;
+    background: #666;
+    padding-top: 10px;
+    padding-bottom: 40px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+
+}
+
+.loginForm {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+}
+
+.registerForm {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+}
+
+.loginInput {
+    font-family: "Press Start 2P", system-ui;
+    font-size: 16px;
+    border: 0;
+    background: #444;
+    color: #fff;
+    width: 70%;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.joinButton {
+    font-family: "Press Start 2P", system-ui;
+    border: 0;
+    background: #444;
+    color: #fff;
+    width: 45%;
+    height: 35px;
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 10px 15px 15px;
+    font-size: 12px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.joinButton:hover {
+    background-color: #d0d0d0;
+    color: black;
+}
