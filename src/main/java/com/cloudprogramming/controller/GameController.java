@@ -10,10 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -40,5 +37,15 @@ public class GameController {
             simpMessagingTemplate.convertAndSend("/topic/game-progress/" + game.getGameId(), game);
             return ResponseEntity.ok(game);
         }
+    }
+
+    @GetMapping("/hello")
+    public ResponseEntity<String> hello() {
+        return ResponseEntity.ok("Hello from public endpoint in Game Controller!");
+    }
+
+    @GetMapping("/secure")
+    public ResponseEntity<String> secureHello() {
+        return ResponseEntity.ok("Hello from secure endpoint in Game Controller!");
     }
 }

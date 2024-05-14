@@ -14,6 +14,7 @@ const Logout = () => {
             user.signOut();
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
+            window.location.reload();
         }
     };
 

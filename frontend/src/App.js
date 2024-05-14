@@ -110,7 +110,9 @@ function App() {
     }
     setTurns(newTurns);
     setGameOn(true);
-    setOpponent(data.player2.login)
+    if (data.player2 != null) {
+      setOpponent(data.player2.login)
+    }
     if (data.winner != null) {
       alert("Winner is " + data.winner);
       setGameOn(false);

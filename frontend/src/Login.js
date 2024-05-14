@@ -7,7 +7,7 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSignUp = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
         const user = new CognitoUser({
@@ -25,6 +25,7 @@ const Login = () => {
                 console.log('onSuccess:', data);
                 localStorage.setItem('accessToken', data.getAccessToken().getJwtToken());
                 localStorage.setItem('refreshToken', data.getRefreshToken().getToken());
+                window.location.reload();
             },
             onFailure: err => {
                 console.error('onFailure:', err);
@@ -40,7 +41,7 @@ const Login = () => {
     return (
         <div className="text-center" id="cognitoBox">>
             {
-                <form className="loginForm" onSubmit={handleSignUp}>
+                <form className="loginForm" onSubmit={handleLogin}>
                     <input
                         className="loginInput"
                         type="text"
