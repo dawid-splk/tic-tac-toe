@@ -2,24 +2,22 @@ package com.cloudprogramming.config;
 
 
 import com.cloudprogramming.service.AuthenticationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final AuthenticationService authenticationService;
 
-    public SecurityConfig(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,13 +25,17 @@ public class SecurityConfig {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests()
-                .antMatchers("/game/hello").permitAll()
-                .anyRequest().authenticated();
-
-        http.addFilterBefore(new JwtAuthenticationFilter(authenticationService),
-                UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests()
+                .requestMatchers("/game/hello").permitAll()
+                .requestMatchers("/gameplay/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(authenticationService),
+                UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new CorsFilter(), UsernamePasswordAuthenticationFilter.class);;
 
         return http.build();
     }
 }
+
+
