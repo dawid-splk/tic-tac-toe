@@ -9,16 +9,45 @@ import com.cloudprogramming.model.TicToe;
 import com.cloudprogramming.storage.GameStorage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
+import software.amazon.awssdk.services.dynamodb.model.PutItemResponse;
 
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.cloudprogramming.model.GameStatus.*;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class GameService {
+
+    private final DynamoDbClient dynamoDbClient;
+
+    @Autowired
+    public GameService(DynamoDbClient dynamoDbClient) {
+        this.dynamoDbClient = dynamoDbClient;
+    }
+    public void saveGameResult(String gameId, String winner, String loser) {
+        Map<String, AttributeValue> item = new HashMap<>();
+        item.put("game_id", AttributeValue.builder().s(gameId).build());
+        item.put("timestamp", AttributeValue.builder().s(Instant.now().toString()).build());
+        item.put("winner_username", AttributeValue.builder().s(winner).build());
+        item.put("loser_username", AttributeValue.builder().s(loser).build());
+
+        PutItemRequest request = PutItemRequest.builder()
+                .tableName("game_results")
+                .item(item)
+                .build();
+
+        PutItemResponse response = dynamoDbClient.putItem(request);
+        log.debug(String.valueOf(response));
+    }
 
     public Game createGame(Player player) {
         Game game = new Game();
@@ -71,8 +100,10 @@ public class GameService {
 
         if (xWinner) {
             game.setWinner(TicToe.X);
+            saveGameResult(game.getGameId(), game.getPlayer1().getLogin(), game.getPlayer2().getLogin());
         } else if (oWinner) {
             game.setWinner(TicToe.O);
+            saveGameResult(game.getGameId(), game.getPlayer2().getLogin(), game.getPlayer1().getLogin());
         }
 
         GameStorage.getInstance().setGame(game);
