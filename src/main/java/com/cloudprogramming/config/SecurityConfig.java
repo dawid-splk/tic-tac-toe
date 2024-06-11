@@ -26,6 +26,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/game/hello").permitAll()
+                .requestMatchers("/upload").permitAll()
                 .requestMatchers("/gameplay/**").permitAll()      // public because of cors issue, acceptable solution coz websocket
                 .anyRequest().authenticated()                       // requires app and topic prefix (like a token) and is after login anyway
                 .and()

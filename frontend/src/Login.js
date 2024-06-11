@@ -23,6 +23,7 @@ const Login = () => {
         user.authenticateUser(authDetails, {
             onSuccess: data => {
                 console.log('onSuccess:', data);
+                localStorage.setItem('username', username);
                 localStorage.setItem('accessToken', data.getAccessToken().getJwtToken());
                 localStorage.setItem('refreshToken', data.getRefreshToken().getToken());
                 window.location.reload();

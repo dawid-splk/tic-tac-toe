@@ -17,6 +17,8 @@ function App() {
   const [turns, setTurns] = useState([["", "", ""], ["", "", ""], ["", "", ""]]);
   const [opponent, setOpponent] = useState("")
   const [stompClient, setStompClient] = useState(null);
+  const [playerXImage, setPlayerXImage] = useState('');
+  const [playerOImage, setPlayerOImage] = useState('');
 
   const connectToWebSocket = (gameId) => {
     const socket = new SockJS(url + "/gameplay");
@@ -96,7 +98,7 @@ function App() {
     }
   };
 
-  const displayResponse = (data) => {
+  const displayResponse = async (data) => {
     let newTurns = [...turns];
     let board = data.board;
     for (let i = 0; i < board.length; i++) {
@@ -111,19 +113,53 @@ function App() {
     setTurns(newTurns);
     setGameOn(true);
     if (data.player2 != null) {
-      setOpponent(data.player2.login)
+      setOpponent(data.player2.login);
+      const player2Image = await fetchPlayerImage(data.player2.login);
+      setPlayerOImage(player2Image); // Fetch and set player O image only when player2 is available
     }
     if (data.winner != null) {
       alert("Winner is " + data.winner);
+      setPlayerXImage('');
+      setPlayerOImage('');
       setGameOn(false);
       reset();
     }
   };
 
+
+  const fetchPlayerImage = async (username) => {
+    try {
+
+      // const testImageUrl = 'https://via.placeholder.com/150';
+      // return testImageUrl;
+      const accessToken = localStorage.getItem('accessToken');
+
+
+      const response = await fetch(`${url}/image/${username}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        },
+      });
+      if (response.ok) {
+        const imageUrl = await response.text();
+        return imageUrl;
+      } else {
+        console.error('Failed to fetch user image');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
+  };
+
   const createGame = async () => {
-    let login = document.getElementById("login").value;
+    // let login = document.getElementById("login").value;
+    const login = localStorage.getItem('username');
     if (!login) {
-      alert("Please enter username");
+      // alert("Please enter username");
+      alert("We're having trouble authenticating you");
       return;
     }
 
@@ -168,7 +204,11 @@ function App() {
             }
           }
         }
-      setTurns(newTurns);
+        setTurns(newTurns);
+
+        const player1Image = await fetchPlayerImage(data.player1.login);
+        setPlayerXImage(player1Image);
+
       } else {
         console.error('Game creation failed');
       }
@@ -180,36 +220,40 @@ function App() {
   return (
       <div>
         {localStorage.getItem('accessToken') ? (
-                <div className="text-center" id="box">
-                  <header>
-                    <h1>IP: {hostIp}</h1>
-                  </header>
-                  <div className="text-center" id="usernameForm">
-                    <input  id="login" placeholder="Enter username"></input>
-                    <button id="joinButton" onClick={createGame}>Join new game</button>
-                  </div>
-                  <div id="message"></div>
-                  <ul id="gameBoard">
-                    {turns.map((row, i) => (
-                        row.map((symbol, j) => (
-                            <li key={`${i}_${j}`} className="tic" onClick={() => playerTurn(playerType, i, j)}>{symbol}</li>
-                        ))
-                    ))}
-                  </ul>
-
-                  <div className="clearfix"></div>
-                  <footer>
-                    <span><span id="oponentLogin"></span></span>
-                  </footer>
-                  <Logout />
+            <div className="text-center" id="box">
+              <header>
+                <h1>IP: {hostIp}</h1>
+              </header>
+              <div className="text-center" id="usernameForm">
+                <button id="joinButton" onClick={createGame}>Join new game</button>
+              </div>
+              <div id="message"></div>
+              <div className="game-area">
+                <div id="player-images">
+                  {playerXImage && <img src={playerXImage} alt="Player X" className="player-image" />}
+                  {playerXImage && playerOImage && <h1>vs</h1>}
+                  {playerOImage && <img src={playerOImage} alt="Player O" className="player-image" />}
                 </div>
+                <ul id="gameBoard">
+                  {turns.map((row, i) => (
+                      row.map((symbol, j) => (
+                          <li key={`${i}_${j}`} className="tic" onClick={() => playerTurn(playerType, i, j)}>{symbol}</li>
+                      ))
+                  ))}
+                </ul>
+              </div>
+              <div className="clearfix"></div>
+              <footer>
+                <span><span id="oponentLogin"></span></span>
+              </footer>
+              <Logout />
+            </div>
         ) : (
             <>
               <Register />
               <Login />
             </>
         )}
-
       </div>
   );
 }
